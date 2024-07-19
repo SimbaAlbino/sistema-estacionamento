@@ -5,7 +5,7 @@ public class Funcionario {
 	private String email;
 	private String senha;
 	
-	private String caminhoFuncionariosFile; // caminho a ser criado
+	private String caminhoFuncionariosFile = "C:\\Users\\Pedro\\Desktop\\Study\\sistema-estacionamento\\files\\cadastrosFuncionarios.txt"; // caminho a ser criado
 	
 	public Funcionario(String nome, String email, String senha) {
 		this.nome = nome;
@@ -31,6 +31,9 @@ public class Funcionario {
 		this.senha = senha;
 	}
 	
+	public String getCaminhoFuncionariosFile() {
+		return caminhoFuncionariosFile;
+	}
 	public static boolean validarCPF(String cpf) {
 		// Verifica se o CPF não é nulo e se possui exatamente 11 dígitos numéricos
 		return cpf != null && cpf.matches("\\d{11}");
