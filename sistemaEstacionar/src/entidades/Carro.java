@@ -4,13 +4,11 @@ public class Carro {
 	private String placa;
 	private String modelo;
 	private String marca;
-	private Cliente donoCliente;
 	
-	public Carro(String placa, String modelo, String marca, Cliente donoCliente) {
+	public Carro(String placa, String modelo, String marca) {
 		this.placa = placa;
 		this.modelo = modelo;
 		this.marca = marca;
-		this.donoCliente = donoCliente;
 	}
 
 	public String getPlaca() {
@@ -36,15 +34,5 @@ public class Carro {
 	public void setMarca(String marca) {
 		this.marca = marca;
 	}
-
-	public Cliente getDonoCliente() {
-		return donoCliente;
-	}
-
-	public void setDonoCliente(Cliente donoCliente) {
-		this.donoCliente = donoCliente;
-	}
-	
-	
 	
 }
