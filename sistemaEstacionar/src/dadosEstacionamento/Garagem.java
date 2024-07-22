@@ -5,16 +5,17 @@ import java.util.ArrayList;
 
 import entidades.PedidoEstacionar;
 import estacionamentos.Estacao;
+import estacionamentos.Filiais;
 
 public class Garagem {
 	
-	private Estacao estacao;
+	private static Estacao estacao;
 	private int totalCarros;
-	PedidoEstacionar pedido;
+	private static PedidoEstacionar pedido;
 	
-	public Garagem(Estacao estacao, PedidoEstacionar pedido) {
-		this.estacao = estacao;
-		this.pedido = pedido;
+	public Garagem(int totalCarros) {
+		this.totalCarros = totalCarros;
+		
 	}
 
 	public ArrayList<PedidoEstacionar> listaCarros() {
@@ -37,7 +38,7 @@ public class Garagem {
 
 	}
 	
-	 public void lerEstacionamento() {
+	 public void lerEstacionamento() throws IllegalArgumentException {
 	        for (PedidoEstacionar carro : listaCarros()) {
 	            System.out.println("Estacionado: " + carro.getCarro().getModelo() + ": " + carro.getVaga());
 	        }
@@ -46,11 +47,14 @@ public class Garagem {
 	 public Integer lerVagas(String vaga) {
 		 char letra = vaga.charAt(0);
 		 int posicao = Integer.parseInt(vaga.substring(1));
-		 if (vaga.charAt(0) > 96 && vaga.charAt(0) < 123 && posicao < 20) {
-			 return (int) letra - 97 + posicao;
+		 if (posicao == 0) {
 			 //minúsculas
+			 throw new IllegalArgumentException("As vagas começam da posição 1.");
+		 } else if (vaga.charAt(0) > 96 && vaga.charAt(0) < 123 && posicao < 20) {
+			 return (int) letra - 97 + posicao - 1;
+		 
 		 } else if (vaga.charAt(0) > 64 && vaga.charAt(0) < 91 && posicao < 20) {
-			 return (int) letra - 65 + posicao + 539;
+			 return (int) letra - 65 + posicao + 539 - 1;
 		 } else {
 			 throw new IllegalArgumentException("Vaga fora de range.");
 		 }
@@ -67,8 +71,38 @@ public class Garagem {
 		 //limite: letra minúsculo
 	 }
 	 
+	 
 	 public void emitirNota() {
 		 System.out.printf("Veículo retirado da garagem, placa: %s, modelo: %s, data: %s\n", getPedido().getCarro().getPlaca(), getPedido().getCarro().getModelo(), LocalDateTime.now().toString());
+	 }
+	 
+	 public void printarVagas(Filiais filial) {
+		 int contador = 0;
+		 System.out.println("Vagas agendadas");
+		 for (PedidoEstacionar vaga: filial.getVagasAgendadas()) {
+			 System.out.println(vaga);
+			 if (contador % 10 == 0) {
+				 System.out.println();
+			 }
+		 }
+		 System.out.println("Vagas flexíveis");
+		 for (PedidoEstacionar vaga: filial.getVagasFlex()) {
+			 System.out.println(vaga);
+			 if (contador % 10 == 0) {
+				 System.out.println();
+			 }
+		 }
+	 }
+	 
+	 public void checarPrazo() {
+		 
+	 }
+	 
+	 //Recebendo código formatado do lugar desejado
+	 public void editarVagas(int code, Filiais filial) {
+		 // desocupar vaga
+		 // realocar pedido para outra vaga
+		 // ocupar vaga
 	 }
 
 	public int getTotalCarros() {

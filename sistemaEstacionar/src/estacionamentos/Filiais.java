@@ -13,9 +13,9 @@ public abstract class Filiais {
 		this.pedido = pedido;
 	}
 	
-	public abstract ArrayList<PedidoEstacionar> getVagasLivresAgendada();
+	public abstract ArrayList<PedidoEstacionar> getVagasAgendadas();
 	
-	public abstract ArrayList<PedidoEstacionar> getVagasLivresFlex();
+	public abstract ArrayList<PedidoEstacionar> getVagasFlex();
 	
 	public void ocuparVaga(int vaga) {
 		/*
