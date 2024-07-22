@@ -1,16 +1,15 @@
 package estacionamentos;
 
-import dadosEstacionamento.VagaAgendada;
-import dadosEstacionamento.VagaFlex;
+import sistemaInterno.Taxas;
 
 public class BoaGaragem extends Filiais {
 	
-	private int totalVagasAge = 10;
-	private int totalVagasFlex = 50;
+	private int totalVagasAge = 30;
+	private int totalVagasFlex = 80;
 	private boolean[] vagasLivresAgendada = new boolean[totalVagasAge];
 	private boolean[] vagasLivresFlex = new boolean[totalVagasFlex];
 	
-	public BoaGaragem(TaxService tax) {
+	public BoaGaragem(Taxas tax) {
 		super(tax);
 	}
 

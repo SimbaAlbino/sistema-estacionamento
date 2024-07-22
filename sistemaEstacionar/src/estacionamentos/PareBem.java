@@ -1,7 +1,6 @@
 package estacionamentos;
 
-import dadosEstacionamento.VagaAgendada;
-import dadosEstacionamento.VagaFlex;
+import sistemaInterno.Taxas;
 
 public class PareBem extends Filiais {
 
@@ -10,7 +9,7 @@ public class PareBem extends Filiais {
 	private boolean[] vagasLivresAgendada = new boolean[totalVagasAge];
 	private boolean[] vagasLivresFlex = new boolean[totalVagasFlex];
 
-	public PareBem(TaxService tax) {
+	public PareBem(Taxas tax) {
 		super(tax);
 	}
 

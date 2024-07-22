@@ -3,7 +3,6 @@ package dadosEstacionamento;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import aplicacao.ModelagemFile;
 import entidades.PedidoEstacionar;
 import estacionamentos.Estacao;
 
@@ -43,6 +42,29 @@ public class Garagem {
 	            System.out.println("Estacionado: " + carro.getCarro().getModelo() + ": " + carro.getVaga());
 	        }
 	    }
+	 
+	 public Integer lerVagas(String vaga) {
+		 char letra = vaga.charAt(0);
+		 int posicao = Integer.parseInt(vaga.substring(1));
+		 if (vaga.charAt(0) > 96 && vaga.charAt(0) < 123 && posicao < 20) {
+			 return (int) letra - 97 + posicao;
+		 } else if (vaga.charAt(0) > 64 && vaga.charAt(0) < 91 && posicao < 20) {
+			 return (int) letra - 97 + posicao;
+		 } else {
+			 throw new IllegalArgumentException("Vaga fora de range.");
+		 }
+		 //cada letra simboliza o acréscimo de 20, ex a00 será vaga index 0, vaga b02 será vaga b=20 + 02 index 22
+		 //limite: letra minúscula
+		 
+	 }
+	 
+	 public String showVagas(int code) {
+		 int fmtCode = (code / 20) + 97;
+		   // recebendo letra e número
+		 return "" + (char) fmtCode + "" + (code - fmtCode);
+		 //cada letra simboliza o acréscimo de 20, ex a00 será vaga index 0, vaga b02 será vaga b=20 + 02 index 22
+		 //limite: letra minúsculo
+	 }
 	 
 	 public void emitirNota() {
 		 System.out.printf("Veículo retirado da garagem, placa: %s, modelo: %s, data: %s\n", getPedido().getCarro().getPlaca(), getPedido().getCarro().getModelo(), LocalDateTime.now().toString());

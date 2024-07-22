@@ -1,39 +1,20 @@
 package estacionamentos;
 
-import dadosEstacionamento.VagaAgendada;
-import dadosEstacionamento.VagaFlex;
+import sistemaInterno.Taxas;
 
 public abstract class Filiais {
 	
-	private TaxService tax;
+	private Taxas tax;
 	
-	public Filiais( TaxService tax) {
+	public Filiais(Taxas tax) {
 		this.tax = tax;
 	}
-
-	public VagaAgendada getVagaAgendada() {
-		return vagaAgendada;
-	}
-
-	public void setVagaAgendada(VagaAgendada vagaAgendada) {
-		this.vagaAgendada = vagaAgendada;
-	}
-
-	public VagaFlex getVagaFlex() {
-		return vagaFlex;
-	}
-
-	public void setVagaFlex(VagaFlex vagaFlex) {
-		this.vagaFlex = vagaFlex;
-	}
-
-	public TaxService getTax() {
+	
+	public Taxas getTax() {
 		return tax;
 	}
 
-	public void setTax(TaxService tax) {
+	public void setTax(Taxas tax) {
 		this.tax = tax;
 	}
-	
-	
 }

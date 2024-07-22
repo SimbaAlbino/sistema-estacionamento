@@ -1,16 +1,15 @@
 package estacionamentos;
 
-import dadosEstacionamento.VagaAgendada;
-import dadosEstacionamento.VagaFlex;
+import sistemaInterno.Taxas;
 
 public class GaragemCia extends Filiais {
 	
-	private int totalVagasAge = 10;
-	private int totalVagasFlex = 50;
+	private int totalVagasAge = 20;
+	private int totalVagasFlex = 60;
 	private boolean[] vagasLivresAgendada = new boolean[totalVagasAge];
 	private boolean[] vagasLivresFlex = new boolean[totalVagasFlex];
 	
-	public GaragemCia(TaxService tax) {
+	public GaragemCia(Taxas tax) {
 		super(tax);
 	}
 
