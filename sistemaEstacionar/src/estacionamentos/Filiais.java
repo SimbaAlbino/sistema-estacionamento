@@ -1,20 +1,36 @@
 package estacionamentos;
 
-import sistemaInterno.Taxas;
+import java.util.ArrayList;
+
+import entidades.PedidoEstacionar;
 
 public abstract class Filiais {
 	
-	private Taxas tax;
 	
-	public Filiais(Taxas tax) {
-		this.tax = tax;
+	PedidoEstacionar pedido;
+	
+	public Filiais(PedidoEstacionar pedido) {
+		this.pedido = pedido;
 	}
 	
-	public Taxas getTax() {
-		return tax;
+	public abstract ArrayList<PedidoEstacionar> getVagasLivresAgendada();
+	
+	public abstract ArrayList<PedidoEstacionar> getVagasLivresFlex();
+	
+	public void ocuparVaga(int vaga) {
+		/*
+		if (//o carro não estiver em uma vaga) {
+			
+		}
+		*/
 	}
-
-	public void setTax(Taxas tax) {
-		this.tax = tax;
+	
+	public void desocuparVaga(int vaga) {
+		/*
+		if (//o carro não estiver em uma vaga) {
+			
+		}
+		*/
 	}
+	
 }

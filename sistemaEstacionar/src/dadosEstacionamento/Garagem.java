@@ -48,8 +48,9 @@ public class Garagem {
 		 int posicao = Integer.parseInt(vaga.substring(1));
 		 if (vaga.charAt(0) > 96 && vaga.charAt(0) < 123 && posicao < 20) {
 			 return (int) letra - 97 + posicao;
+			 //minúsculas
 		 } else if (vaga.charAt(0) > 64 && vaga.charAt(0) < 91 && posicao < 20) {
-			 return (int) letra - 97 + posicao;
+			 return (int) letra - 65 + posicao + 539;
 		 } else {
 			 throw new IllegalArgumentException("Vaga fora de range.");
 		 }
