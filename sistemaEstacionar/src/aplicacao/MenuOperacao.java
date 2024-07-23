@@ -1,18 +1,21 @@
-package entidades;
+package aplicacao;
 
-public enum User {
-	CLIENTE(1),
-    FUNCIONARIO(2),
-    FINALIZAR(3);
-
+public enum MenuOperacao {
+	Mostrar_Vagas(1),
+	Agendar(2),
+	Pagar(3),
+	Voltar(4);
+	
     private final int value; // Opção atual de menu
 
     // Construtor
-    private User(int value) {
+    private MenuOperacao(int value) {
         this.value = value;
     }
 
     public int getValue() {
         return value;
     }
+    
+    
 }

@@ -1,5 +1,6 @@
 package dadosEstacionamento;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -8,14 +9,14 @@ import estacionamentos.Estacao;
 import estacionamentos.Filiais;
 
 public class Garagem {
-	
+
 	private static Estacao estacao;
 	private int totalCarros;
 	private static PedidoEstacionar pedido;
-	
+
 	public Garagem(int totalCarros) {
 		this.totalCarros = totalCarros;
-		
+
 	}
 
 	public ArrayList<PedidoEstacionar> listaCarros() {
@@ -37,73 +38,104 @@ public class Garagem {
 		ModelagemFile.serializar(getEstacao().getFileEmpresa(), estoqueGeral);
 
 	}
+
+	public void lerEstacionamento() throws IllegalArgumentException {
+		for (PedidoEstacionar carro : listaCarros()) {
+			System.out.println("Estacionado: " + carro.getCarro().getModelo() + ": " + carro.getVaga());
+		}
+	}
+
+	public Integer lerVagas(String vaga) {
+		char letra = vaga.charAt(0);
+		int posicao = Integer.parseInt(vaga.substring(1));
+		if (posicao == 0) {
+			// minúsculas
+			throw new IllegalArgumentException("As vagas começam da posição 1.");
+		} else if (vaga.charAt(0) > 96 && vaga.charAt(0) < 123 && posicao < 20) {
+			return (int) letra - 97 + posicao - 1;
+
+		} else if (vaga.charAt(0) > 64 && vaga.charAt(0) < 91 && posicao < 20) {
+			return (int) letra - 65 + posicao + 539 - 1;
+		} else {
+			throw new IllegalArgumentException("Vaga fora de range.");
+		}
+		// cada letra simboliza o acréscimo de 20, ex a00 será vaga index 0, vaga b02
+		// será vaga b=20 + 02 index 22
+		// limite: letra minúscula
+
+	}
+
+	public String showVagas(int code) {
+		int fmtCode = (code / 20) + 97;
+		// recebendo letra e número
+		return "" + (char) fmtCode + "" + (code - fmtCode);
+		// cada letra simboliza o acréscimo de 20, ex a00 será vaga index 0, vaga b02
+		// será vaga b=20 + 02 index 22
+		// limite: letra minúsculo
+	}
+
+	public void emitirNota() {
+		System.out.printf("Veículo retirado da garagem, placa: %s, modelo: %s, data: %s\n",
+				getPedido().getCarro().getPlaca(), getPedido().getCarro().getModelo(), LocalDateTime.now().toString());
+	}
+
+	public void printarVagas(Filiais filial) {
+		int contador = 0;
+		System.out.println("Vagas agendadas");
+		for (PedidoEstacionar vaga : filial.getVagasAgendadas()) {
+			System.out.println(vaga);
+			if (contador % 10 == 0) {
+				System.out.println();
+			}
+		}
+		System.out.println("Vagas flexíveis");
+		for (PedidoEstacionar vaga : filial.getVagasFlex()) {
+			System.out.println(vaga);
+			if (contador % 10 == 0) {
+				System.out.println();
+			}
+		}
+	}
+
+	public Long checarPrazo(PedidoEstacionar pedido, int opcao) {
+		if (pedido.getFinish() == null) {
+			return null; 
+		}
+		switch (opcao) {
+		case 1:
+			// minutos
+			// se get finish ainda não tiver incializado, tratar
+			return Duration.between(pedido.getStart(), pedido.getFinish()).toMinutes();
+		case 2:
+			// horas
+			return Duration.between(pedido.getStart(), pedido.getFinish()).toHours();
+		case 3:
+			// dias
+			return Duration.between(pedido.getStart(), pedido.getFinish()).toDays();
+		default:
+			throw new IllegalArgumentException("Opção de formatação de tempo indefinida");
+		}
+	}
 	
-	 public void lerEstacionamento() throws IllegalArgumentException {
-	        for (PedidoEstacionar carro : listaCarros()) {
-	            System.out.println("Estacionado: " + carro.getCarro().getModelo() + ": " + carro.getVaga());
-	        }
-	    }
-	 
-	 public Integer lerVagas(String vaga) {
-		 char letra = vaga.charAt(0);
-		 int posicao = Integer.parseInt(vaga.substring(1));
-		 if (posicao == 0) {
-			 //minúsculas
-			 throw new IllegalArgumentException("As vagas começam da posição 1.");
-		 } else if (vaga.charAt(0) > 96 && vaga.charAt(0) < 123 && posicao < 20) {
-			 return (int) letra - 97 + posicao - 1;
-		 
-		 } else if (vaga.charAt(0) > 64 && vaga.charAt(0) < 91 && posicao < 20) {
-			 return (int) letra - 65 + posicao + 539 - 1;
-		 } else {
-			 throw new IllegalArgumentException("Vaga fora de range.");
-		 }
-		 //cada letra simboliza o acréscimo de 20, ex a00 será vaga index 0, vaga b02 será vaga b=20 + 02 index 22
-		 //limite: letra minúscula
-		 
-	 }
-	 
-	 public String showVagas(int code) {
-		 int fmtCode = (code / 20) + 97;
-		   // recebendo letra e número
-		 return "" + (char) fmtCode + "" + (code - fmtCode);
-		 //cada letra simboliza o acréscimo de 20, ex a00 será vaga index 0, vaga b02 será vaga b=20 + 02 index 22
-		 //limite: letra minúsculo
-	 }
-	 
-	 
-	 public void emitirNota() {
-		 System.out.printf("Veículo retirado da garagem, placa: %s, modelo: %s, data: %s\n", getPedido().getCarro().getPlaca(), getPedido().getCarro().getModelo(), LocalDateTime.now().toString());
-	 }
-	 
-	 public void printarVagas(Filiais filial) {
-		 int contador = 0;
-		 System.out.println("Vagas agendadas");
-		 for (PedidoEstacionar vaga: filial.getVagasAgendadas()) {
-			 System.out.println(vaga);
-			 if (contador % 10 == 0) {
-				 System.out.println();
-			 }
-		 }
-		 System.out.println("Vagas flexíveis");
-		 for (PedidoEstacionar vaga: filial.getVagasFlex()) {
-			 System.out.println(vaga);
-			 if (contador % 10 == 0) {
-				 System.out.println();
-			 }
-		 }
-	 }
-	 
-	 public void checarPrazo() {
-		 
-	 }
-	 
-	 //Recebendo código formatado do lugar desejado
-	 public void editarVagas(int code, Filiais filial) {
-		 // desocupar vaga
-		 // realocar pedido para outra vaga
-		 // ocupar vaga
-	 }
+	public void checarVencimentos() {
+		
+	}
+	
+	public void atualizarSistema() {
+		
+	}
+	
+	public void finalizarPedido(PedidoEstacionar pedido) {
+		pedido.setFinish(LocalDateTime.now());
+		//validar
+	}
+
+	// Recebendo código formatado do lugar desejado
+	public void editarVagas(int code, Filiais filial) {
+		// desocupar vaga
+		// realocar pedido para outra vaga
+		// ocupar vaga
+	}
 
 	public int getTotalCarros() {
 		return totalCarros;
@@ -121,36 +153,21 @@ public class Garagem {
 		return pedido;
 	}
 
-	public void setPedido(PedidoEstacionar pedido) {
-		this.pedido = pedido;
-	}
-	
-	
-	
-	
-	 
-	 
-	
 	/*
-	private Double pricePerDay;
-	private Double pricePerHour;
-	private Taxas taxService;
-	
-	public void processInvoice(PedidoEstacionar pedido) {
-		
-		double minutes = ChronoUnit.MINUTES.between(pedido.getStart(), pedido.getFinish());
-		double hours = minutes / 60;
-		
-		double basicPayment;
-		if (hours <= 12.0) {
-			basicPayment = pricePerHour * Math.ceil(hours);
-		} else {
-			basicPayment = pricePerDay * Math.ceil(hours/24.0);
-		}
-		
-		double tax = taxService.tax(basicPayment);
-		
-		pedido.setInvoice(new Divida(basicPayment, tax));
-	}
-	    */
+	 * private Double pricePerDay; private Double pricePerHour; private Taxas
+	 * taxService;
+	 * 
+	 * public void processInvoice(PedidoEstacionar pedido) {
+	 * 
+	 * double minutes = ChronoUnit.MINUTES.between(pedido.getStart(),
+	 * pedido.getFinish()); double hours = minutes / 60;
+	 * 
+	 * double basicPayment; if (hours <= 12.0) { basicPayment = pricePerHour *
+	 * Math.ceil(hours); } else { basicPayment = pricePerDay *
+	 * Math.ceil(hours/24.0); }
+	 * 
+	 * double tax = taxService.tax(basicPayment);
+	 * 
+	 * pedido.setInvoice(new Divida(basicPayment, tax)); }
+	 */
 }

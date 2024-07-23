@@ -12,7 +12,7 @@ public class PedidoEstacionar {
 	private StatusCarro statusCarro;
 	private VagaCarro vagaCarro;
 	
-	private LocalDateTime start;
+	private LocalDateTime start = LocalDateTime.now();
 	private LocalDateTime finish;
 
 	public PedidoEstacionar(Carro carro, String vaga, StatusCarro statusCarro, VagaCarro vagaCarro) {
