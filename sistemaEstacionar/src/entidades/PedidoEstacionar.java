@@ -70,6 +70,11 @@ public class PedidoEstacionar {
 		this.finish = finish;
 	}
 
+	public boolean set(int i, Object object) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 	
 	

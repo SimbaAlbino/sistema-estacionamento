@@ -3,6 +3,8 @@ package dadosEstacionamento;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 import entidades.PedidoEstacionar;
 import estacionamentos.Estacao;
@@ -13,6 +15,8 @@ public class Garagem {
 	private static Estacao estacao;
 	private int totalCarros;
 	private static PedidoEstacionar pedido;
+
+	private static Scanner sc = new Scanner(System.in);
 
 	public Garagem(int totalCarros) {
 		this.totalCarros = totalCarros;
@@ -45,7 +49,7 @@ public class Garagem {
 		}
 	}
 
-	public Integer lerVagas(String vaga) {
+	public static Integer lerVagas(String vaga) {
 		char letra = vaga.charAt(0);
 		int posicao = Integer.parseInt(vaga.substring(1));
 		if (posicao == 0) {
@@ -65,7 +69,7 @@ public class Garagem {
 
 	}
 
-	public String showVagas(int code) {
+	public static String showVagas(int code) {
 		int fmtCode = (code / 20) + 97;
 		// recebendo letra e número
 		return "" + (char) fmtCode + "" + (code - fmtCode);
@@ -99,7 +103,7 @@ public class Garagem {
 
 	public Long checarPrazo(PedidoEstacionar pedido, int opcao) {
 		if (pedido.getFinish() == null) {
-			return null; 
+			return null;
 		}
 		switch (opcao) {
 		case 1:
@@ -116,25 +120,82 @@ public class Garagem {
 			throw new IllegalArgumentException("Opção de formatação de tempo indefinida");
 		}
 	}
-	
+
 	public void checarVencimentos() {
-		
+
 	}
-	
+
 	public void atualizarSistema() {
-		
+		// checar se algum carro passou do prazo de vencimento
 	}
-	
+
 	public void finalizarPedido(PedidoEstacionar pedido) {
 		pedido.setFinish(LocalDateTime.now());
-		//validar
+		// validar
 	}
 
 	// Recebendo código formatado do lugar desejado
-	public void editarVagas(int code, Filiais filial) {
-		// desocupar vaga
-		// realocar pedido para outra vaga
-		// ocupar vaga
+	public void editarVagas(Filiais filial) {
+		boolean fimOp = false;
+		do {
+			try {
+				
+			
+			if (true) {
+				// desocupar/ocupar vaga
+				System.out.println("Digite a vaga a ser preenchida: ");
+				String vaga = sc.next();
+				// metodo para validar vada
+				int code = Garagem.lerVagas(vaga);
+				System.out.println(
+						"1 - Informe a placa do veículo para ocupar\n2 - Pressione enter para desocupar\n3 - Voltar");
+				String placa = sc.next();
+				if (true)// vaga agendada
+					filial.getTotalVagas()[0].set(code, null);
+				else if (false) {
+					// vaga flex
+				} else {
+					throw new IllegalArgumentException("Vaga não encontrada");
+				}
+			} else if (false) {
+				// encontrar vaga por placa// realocar pedido para outra vaga
+				System.out.println("Digite a placa do veículo para localizarmos no sistema");
+				String placa = sc.next();
+				String vaga = filial.searchPlate(placa);
+				System.out.println("O pedido está na vaga: " + vaga);
+				
+				
+				
+				System.out.println("1 - Realocar pedido para outra vaga\n2- Voltar");
+				if (true)// vaga agendada
+					filial.getTotalVagas()[0].set(code, null);
+				else if (false) {
+					// vaga flex
+					filial.getTotalVagas()[1].set(searchPlate.get, null);
+				} else {
+					throw new IllegalArgumentException("Vaga não encontrada");
+				}
+				
+				
+				
+				
+				System.out.println("Digite a vaga a ser preenchida: ");
+				// if status da vaga for a mesma que a do carro e se a vaga não tiver um carro.
+				String vaga = sc.next();
+				int index = Garagem.lerVagas(vaga);
+				filial.getTotalVagas()[1].set(index, pedido);
+				System.out.println("Voltando...");
+				Thread.sleep(3000);
+
+			} else {
+
+			}
+			fimOp = true;
+			} catch (InputMismatchException e) {
+				
+			}
+		} while (!fimOp);
+
 	}
 
 	public int getTotalCarros() {

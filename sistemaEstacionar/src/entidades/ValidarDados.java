@@ -17,4 +17,13 @@ public class ValidarDados {
 	public static boolean validarSenha(String senha) {
 		return senha != null && (senha.length() > 6);
 	}
+	/*
+	public static boolean validarVaga(String senha) {
+		return senha != null && (senha.length() > 6);
+	}
+	
+	public static boolean validarPlaca(String senha) {
+		return senha != null && (senha.length() > 6);
+	}
+	*/
 }	

@@ -1,6 +1,6 @@
 package dadosEstacionamento;
 
 public enum VagaCarro {
-	ESTACIONADO_FLEX,
-	ESTACIONADO_AGE;
+	Vaga_Flexivel,
+	Vaga_Agendada;
 }

@@ -1,7 +1,11 @@
 package aplicacao;
 
+import java.util.Scanner;
+
+import dadosEstacionamento.VagaCarro;
 import entidades.Funcionario;
 import entidades.User;
+import estacionamentos.BoaGaragem;
 
 public class Programa {
 
@@ -10,16 +14,22 @@ public class Programa {
 
 	public static void main(String[] args) {
 		User conta = choicesUser[UI.getRequest(1) - 1];
-
+		Scanner sc = new Scanner(System.in);
+		//selecionar o estacionamento
+		
 		while (conta != User.FINALIZAR) {
 			if (conta == User.CLIENTE) {
 				MenuOperacao operacao = choices[UI.getRequest(2) - 1];
 				// pedir para passar a placa do carro e o cpf
+				
 
 				while (operacao != MenuOperacao.Voltar) {
 					switch (operacao) {
 					case Mostrar_Vagas:
 						System.out.printf("%nMostrando vagas disponíveis:%n");
+						BoaGaragem boa = new BoaGaragem();
+						boa.mostrarStatusLista(VagaCarro.Vaga_Agendada);
+						sc.nextLine();
 						break;
 					case Agendar:
 						System.out.printf("%nSistema de agendamento:%n");

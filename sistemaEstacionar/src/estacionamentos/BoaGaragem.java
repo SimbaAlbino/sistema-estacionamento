@@ -15,6 +15,10 @@ public class BoaGaragem extends Filiais {
 	public BoaGaragem(PedidoEstacionar pedido) {
 		super(pedido);
 	}
+	
+	public BoaGaragem() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public int getTotalVagasAge() {
@@ -47,5 +51,17 @@ public class BoaGaragem extends Filiais {
 		System.out.println("Taxa Fixa Adicional: " + taxaFixaAdd);
 		System.out.println("Valor da Diária: " + valorDaDiaria);
 		System.out.println("Valor Total do Agendamento por " +  Garagem.checarPrazo(getPedido(), 3)+ " dias: " + calcularValorTotalAgendamento( Garagem.checarPrazo(getPedido(), 3)));
+	}
+
+	@Override
+	public boolean ocuparVaga(int vaga, PedidoEstacionar pedido) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean desocuparVaga(int vaga) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
