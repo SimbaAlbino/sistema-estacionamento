@@ -6,229 +6,326 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import aplicacao.UI;
 import entidades.PedidoEstacionar;
-import estacionamentos.Estacao;
+import entidades.ValidarDados;
 import estacionamentos.Filiais;
 
 public class Garagem {
 
-	private static Estacao estacao;
-	private int totalCarros;
-	private static PedidoEstacionar pedido;
+    private Filiais filiais;
+    private static int totalCarros;
+    private PedidoEstacionar pedido;
 
-	private static Scanner sc = new Scanner(System.in);
+    // Caminho dos arquivos
+    private static final String CAMINHO_BASE = "C:\\Users\\pedro\\Desktop\\Study\\sistema-estacionamento\\files\\";
+    private static final String CAMINHO_PEDIDOS = CAMINHO_BASE + "pedidos.txt";
 
-	public Garagem(int totalCarros) {
-		this.totalCarros = totalCarros;
+    private static Scanner sc = new Scanner(System.in);
 
-	}
+    // Construtores
+    public Garagem(Filiais filiais, PedidoEstacionar pedido) {
+        this.filiais = filiais;
+        this.pedido = pedido;
+    }
 
-	public ArrayList<PedidoEstacionar> listaCarros() {
-		ArrayList<PedidoEstacionar> garagem = ModelagemFile.desserializar(getEstacao().getFileEmpresa());
-		return garagem;
-	}
+    public Garagem(PedidoEstacionar pedido) {
+        this.pedido = pedido;
+    }
 
-	public void addCarro(PedidoEstacionar carro) {
-		ArrayList<PedidoEstacionar> estoqueGeral = listaCarros();
-		estoqueGeral.add(carro);
-		ModelagemFile.serializar(getEstacao().getFileEmpresa(), estoqueGeral);
-		//
-	}
+    public Garagem() {
+    }
 
-	public synchronized void removerCarro(PedidoEstacionar carro) {
-		ArrayList<PedidoEstacionar> estoqueGeral = listaCarros();
-		estoqueGeral.remove(carro);
-		emitirNota();
-		ModelagemFile.serializar(getEstacao().getFileEmpresa(), estoqueGeral);
+    // Caminho do arquivo
+    private String getFilePath() {
+        return CAMINHO_PEDIDOS;
+    }
 
-	}
+    // Lista de carros
+    public ArrayList<PedidoEstacionar> listaCarros() {
+        return ModelagemFile.desserializar(getFilePath());
+    }
 
-	public void lerEstacionamento() throws IllegalArgumentException {
-		for (PedidoEstacionar carro : listaCarros()) {
-			System.out.println("Estacionado: " + carro.getCarro().getModelo() + ": " + carro.getVaga());
-		}
-	}
+    // Adicionar carro
+    public void addCarro(PedidoEstacionar carro) {
+        ArrayList<PedidoEstacionar> estoqueGeral = listaCarros();
+        estoqueGeral.add(carro);
+        ModelagemFile.serializar(getFilePath(), estoqueGeral);
+    }
 
-	public static Integer lerVagas(String vaga) {
-		char letra = vaga.charAt(0);
-		int posicao = Integer.parseInt(vaga.substring(1));
-		if (posicao == 0) {
-			// minúsculas
-			throw new IllegalArgumentException("As vagas começam da posição 1.");
-		} else if (vaga.charAt(0) > 96 && vaga.charAt(0) < 123 && posicao < 20) {
-			return (int) letra - 97 + posicao - 1;
+    // Remover carro
+    public synchronized void removerCarro(PedidoEstacionar carro) {
+        ArrayList<PedidoEstacionar> estoqueGeral = listaCarros();
+        estoqueGeral.remove(carro);
+        emitirNota();
+        ModelagemFile.serializar(getFilePath(), estoqueGeral);
+    }
 
-		} else if (vaga.charAt(0) > 64 && vaga.charAt(0) < 91 && posicao < 20) {
-			return (int) letra - 65 + posicao + 539 - 1;
-		} else {
-			throw new IllegalArgumentException("Vaga fora de range.");
-		}
-		// cada letra simboliza o acréscimo de 20, ex a00 será vaga index 0, vaga b02
-		// será vaga b=20 + 02 index 22
-		// limite: letra minúscula
+    // Ler estacionamento
+    public void lerEstacionamento() {
+        for (PedidoEstacionar carro : listaCarros()) {
+            System.out.println("Estacionado: " + carro.getCarro().getModelo() + ": " + carro.getVaga());
+        }
+    }
 
-	}
+    // Ler vagas
+    public static Integer lerVagas(String vaga) {
+        char letra = vaga.charAt(0);
+        int posicao = Integer.parseInt(vaga.substring(1));
+        if (posicao < 1) {
+            throw new IllegalArgumentException("As vagas começam da posição 1.");
+        } else if (Character.isLowerCase(letra) && posicao < 20) {
+            return (int) letra - 97 + posicao - 1;
+        } else if (Character.isUpperCase(letra) && posicao < 20) {
+            return (int) letra - 65 + posicao + 539 - 1;
+        } else {
+            throw new IllegalArgumentException("Vaga fora de range.");
+        }
+    }
 
-	public static String showVagas(int code) {
-		int fmtCode = (code / 20) + 97;
-		// recebendo letra e número
-		return "" + (char) fmtCode + "" + (code - fmtCode);
-		// cada letra simboliza o acréscimo de 20, ex a00 será vaga index 0, vaga b02
-		// será vaga b=20 + 02 index 22
-		// limite: letra minúsculo
-	}
+    public static String showVagas(int code) {
+        int letraCode = code / 20;
+        int posicao = code % 20;
+        char letra = (char) (letraCode + 97);
+        return "" + letra + String.format("%02d", posicao);
+    }
 
-	public void emitirNota() {
-		System.out.printf("Veículo retirado da garagem, placa: %s, modelo: %s, data: %s\n",
-				getPedido().getCarro().getPlaca(), getPedido().getCarro().getModelo(), LocalDateTime.now().toString());
-	}
+    // Emitir nota
+    public void emitirNota() {
+        if (getPedido() != null) {
+            System.out.printf("Veículo retirado da garagem, placa: %s, modelo: %s, data: %s\n",
+                    getPedido().getCarro().getPlaca(), getPedido().getCarro().getModelo(),
+                    LocalDateTime.now().toString());
+        }
+    }
 
-	public void printarVagas(Filiais filial) {
-		int contador = 0;
-		System.out.println("Vagas agendadas");
-		for (PedidoEstacionar vaga : filial.getVagasAgendadas()) {
-			System.out.println(vaga);
-			if (contador % 10 == 0) {
-				System.out.println();
-			}
-		}
-		System.out.println("Vagas flexíveis");
-		for (PedidoEstacionar vaga : filial.getVagasFlex()) {
-			System.out.println(vaga);
-			if (contador % 10 == 0) {
-				System.out.println();
-			}
-		}
-	}
+    // Imprimir vagas
+    public void printarVagas(Filiais filial) {
+        System.out.println("Vagas agendadas");
+        printarVagasLista(filial.getVagasAgendadas());
 
-	public Long checarPrazo(PedidoEstacionar pedido, int opcao) {
-		if (pedido.getFinish() == null) {
-			return null;
-		}
-		switch (opcao) {
-		case 1:
-			// minutos
-			// se get finish ainda não tiver incializado, tratar
-			return Duration.between(pedido.getStart(), pedido.getFinish()).toMinutes();
-		case 2:
-			// horas
-			return Duration.between(pedido.getStart(), pedido.getFinish()).toHours();
-		case 3:
-			// dias
-			return Duration.between(pedido.getStart(), pedido.getFinish()).toDays();
-		default:
-			throw new IllegalArgumentException("Opção de formatação de tempo indefinida");
-		}
-	}
+        System.out.println("Vagas flexíveis");
+        printarVagasLista(filial.getVagasFlex());
+    }
 
-	public void checarVencimentos() {
+    private void printarVagasLista(ArrayList<PedidoEstacionar> vagas) {
+        int contador = 0;
+        for (PedidoEstacionar vaga : vagas) {
+            System.out.println(vaga);
+            if (++contador % 10 == 0) {
+                System.out.println();
+            }
+        }
+    }
 
-	}
+    // Checar prazo
+    public Long checarPrazo(PedidoEstacionar pedido, int opcao) {
+        if (pedido.getFinish() == null) {
+            return null;
+        }
+        Duration duracao = Duration.between(pedido.getStart(), pedido.getFinish());
+        switch (opcao) {
+            case 1:
+                return duracao.toMinutes();
+            case 2:
+                return duracao.toHours();
+            case 3:
+                return duracao.toDays();
+            default:
+                throw new IllegalArgumentException("Opção de formatação de tempo indefinida");
+        }
+    }
 
-	public void atualizarSistema() {
-		// checar se algum carro passou do prazo de vencimento
-	}
+    // Checar vencimentos
+    public void checarVencimentos() {
+        Long prazo = checarPrazo(getPedido(), 3);
+        if (prazo == null) return;
 
-	public void finalizarPedido(PedidoEstacionar pedido) {
-		pedido.setFinish(LocalDateTime.now());
-		// validar
-	}
+        if (prazo > 30 && getPedido().getVagaCarro() == VagaCarro.Vaga_Agendada) {
+            finalizarPedido(getPedido());
+            removerCarro(getPedido());
+        } else if (prazo > 3 && getPedido().getVagaCarro() == VagaCarro.Vaga_Flexivel) {
+            finalizarPedido(getPedido());
+            removerCarro(getPedido());
+        }
+    }
 
-	// Recebendo código formatado do lugar desejado
-	public void editarVagas(Filiais filial) {
-		boolean fimOp = false;
-		do {
-			try {
-				
-			
-			if (true) {
-				// desocupar/ocupar vaga
-				System.out.println("Digite a vaga a ser preenchida: ");
-				String vaga = sc.next();
-				// metodo para validar vada
-				int code = Garagem.lerVagas(vaga);
-				System.out.println(
-						"1 - Informe a placa do veículo para ocupar\n2 - Pressione enter para desocupar\n3 - Voltar");
-				String placa = sc.next();
-				if (true)// vaga agendada
-					filial.getTotalVagas()[0].set(code, null);
-				else if (false) {
-					// vaga flex
-				} else {
-					throw new IllegalArgumentException("Vaga não encontrada");
-				}
-			} else if (false) {
-				// encontrar vaga por placa// realocar pedido para outra vaga
-				System.out.println("Digite a placa do veículo para localizarmos no sistema");
-				String placa = sc.next();
-				String vaga = filial.searchPlate(placa);
-				System.out.println("O pedido está na vaga: " + vaga);
-				
-				
-				
-				System.out.println("1 - Realocar pedido para outra vaga\n2- Voltar");
-				if (true)// vaga agendada
-					filial.getTotalVagas()[0].set(code, null);
-				else if (false) {
-					// vaga flex
-					filial.getTotalVagas()[1].set(searchPlate.get, null);
-				} else {
-					throw new IllegalArgumentException("Vaga não encontrada");
-				}
-				
-				
-				
-				
-				System.out.println("Digite a vaga a ser preenchida: ");
-				// if status da vaga for a mesma que a do carro e se a vaga não tiver um carro.
-				String vaga = sc.next();
-				int index = Garagem.lerVagas(vaga);
-				filial.getTotalVagas()[1].set(index, pedido);
-				System.out.println("Voltando...");
-				Thread.sleep(3000);
+    // Atualizar sistema
+    public void atualizarSistema() {
+        checarVencimentos();
+        // Implementar lógica adicional de atualização do sistema conforme necessário
+    }
 
-			} else {
+    // Finalizar pedido
+    public void finalizarPedido(PedidoEstacionar pedido) {
+        pedido.setFinish(LocalDateTime.now());
+        // Validar
+    }
 
-			}
-			fimOp = true;
-			} catch (InputMismatchException e) {
-				
-			}
-		} while (!fimOp);
+    // Editar vagas
+    public void editarVagas(Filiais filial) {
+        String vaga;
+        String placa;
+        boolean fimOp = false;
 
-	}
+        do {
+            try {
+                int opcao = UI.getRequest(4);
+                switch (opcao) {
+                    case 1:
+                        System.out.println("Digite a vaga a ser preenchida: ");
+                        vaga = sc.next();
+                        
+                        // Valida o formato da vaga
+                        if (!ValidarDados.validarVaga(vaga)) {
+                            throw new OperacaoError("Erro de operação, a vaga deve ter um formato letra e 2 dígitos.");
+                        }
+                        
+                        // Converte a vaga para código
+                        int code = lerVagas(vaga);
 
-	public int getTotalCarros() {
-		return totalCarros;
-	}
+                        System.out.println("1 - Informe a placa do veículo para ocupar\n2 - Pressione enter para desocupar\n3 - Voltar");
+                        int opcao2 = sc.nextInt();
+                        sc.nextLine(); // Limpar o buffer do scanner
 
-	public void setTotalCarros(int totalCarros) {
-		this.totalCarros = listaCarros().size();
-	}
+                        switch (opcao2) {
+                            case 1:
+                                // Ocupação de vaga
+                                System.out.println("Digite a placa do veículo: ");
+                                placa = sc.next().trim();
+                                
+                                // Valida a placa do veículo
+                                if (!ValidarDados.validarPlaca(placa)) {
+                                    throw new OperacaoError("Erro de operação, a placa deve ter 7 dígitos.");
+                                }
+                                
+                                PedidoEstacionar pedidoOcupacao = filial.searchPlate(placa);
+                                if (pedidoOcupacao != null) {
+                                    if (code < filial.getTotalVagas()[0].size()) {
+                                        // Vaga agendada
+                                        if (filial.getTotalVagas()[0].get(code) == null) {
+                                            filial.getTotalVagas()[0].set(code, pedidoOcupacao);
+                                            System.out.println("Vaga agendada ocupada com sucesso.");
+                                        } else {
+                                            System.out.println("A vaga agendada já está ocupada.");
+                                        }
+                                    } else {
+                                        int vagaFlex = code - filial.getTotalVagas()[0].size();
+                                        if (filial.getTotalVagas()[1].get(vagaFlex) == null) {
+                                            // Vaga flexível
+                                            filial.getTotalVagas()[1].set(vagaFlex, pedidoOcupacao);
+                                            System.out.println("Vaga flexível ocupada com sucesso.");
+                                        } else {
+                                            System.out.println("A vaga flexível já está ocupada.");
+                                        }
+                                    }
+                                } else {
+                                    throw new IllegalArgumentException("Pedido não encontrado com a placa: " + placa);
+                                }
+                                break;
 
-	public Estacao getEstacao() {
-		return estacao;
-	}
+                            case 2:
+                                // Desocupação de vaga
+                                if (code < filial.getTotalVagas()[0].size()) {
+                                    // Vaga agendada
+                                    if (filial.getTotalVagas()[0].get(code) != null) {
+                                        filial.getTotalVagas()[0].set(code, null);
+                                        System.out.println("Vaga agendada desocupada com sucesso.");
+                                    } else {
+                                        System.out.println("A vaga agendada já está desocupada.");
+                                    }
+                                } else {
+                                    int vagaFlex = code - filial.getTotalVagas()[0].size();
+                                    if (filial.getTotalVagas()[1].get(vagaFlex) != null) {
+                                        filial.getTotalVagas()[1].set(vagaFlex, null);
+                                        System.out.println("Vaga flexível desocupada com sucesso.");
+                                    } else {
+                                        System.out.println("A vaga flexível já está desocupada.");
+                                    }
+                                }
+                                break;
 
-	public PedidoEstacionar getPedido() {
-		return pedido;
-	}
+                            case 3:
+                                System.out.println("Voltando...");
+                                break;
 
-	/*
-	 * private Double pricePerDay; private Double pricePerHour; private Taxas
-	 * taxService;
-	 * 
-	 * public void processInvoice(PedidoEstacionar pedido) {
-	 * 
-	 * double minutes = ChronoUnit.MINUTES.between(pedido.getStart(),
-	 * pedido.getFinish()); double hours = minutes / 60;
-	 * 
-	 * double basicPayment; if (hours <= 12.0) { basicPayment = pricePerHour *
-	 * Math.ceil(hours); } else { basicPayment = pricePerDay *
-	 * Math.ceil(hours/24.0); }
-	 * 
-	 * double tax = taxService.tax(basicPayment);
-	 * 
-	 * pedido.setInvoice(new Divida(basicPayment, tax)); }
-	 */
+                            default:
+                                System.out.println("Opção inválida.");
+                                break;
+                        }
+                        break;
+
+                    case 2:
+                        System.out.println("Digite a placa do veículo para localizarmos no sistema");
+                        placa = sc.next().trim();
+                        
+                        // Localiza o pedido com base na placa
+                        PedidoEstacionar pedidoPlaca = filial.searchPlate(placa);
+
+                        if (pedidoPlaca != null) {
+                            System.out.println("O pedido está na vaga: " + pedidoPlaca.getVaga());
+                            System.out.println("1 - Realocar pedido para outra vaga\n2 - Voltar");
+                            
+                            int opcaoRealocar = sc.nextInt();
+                            sc.nextLine(); // Limpar o buffer do scanner
+                            
+                            switch (opcaoRealocar) {
+                                case 1:
+                                    // Chama o método para substituir a vaga
+                                    filial.substituirVaga(filial, pedidoPlaca);
+                                    break;
+                                case 2:
+                                    System.out.println("Voltando...");
+                                    break;
+                                default:
+                                    System.out.println("Opção inválida.");
+                                    break;
+                            }
+                        } else {
+                            System.out.println("Pedido não encontrado com a placa: " + placa);
+                        }
+                        break;
+
+                    case 3:
+                        System.out.println("Voltando...");
+                        Thread.sleep(3000);
+                        break;
+
+                    default:
+                        System.out.println("Opção inválida.");
+                        break;
+                }
+                fimOp = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Tente novamente.");
+                sc.next(); // Limpar o buffer do scanner
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Erro ao pausar o sistema.");
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        } while (!fimOp);
+    }
+
+    // Getters e Setters
+    public int getTotalCarros() {
+        return totalCarros;
+    }
+
+    public void setTotalCarros(int totalCarros) {
+        Garagem.totalCarros = totalCarros;
+    }
+
+    public Filiais getFiliais() {
+        return filiais;
+    }
+
+    public PedidoEstacionar getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(PedidoEstacionar pedido) {
+        this.pedido = pedido;
+    }
 }

@@ -18,6 +18,9 @@ public class UI {
 		case 2:
 			opcoes = Arrays.asList("Mostrar Vagas", "Agendar", "Pagar", "Voltar");
 			break;
+		case 3:
+			opcoes = Arrays.asList("Boa Garagem", "Garagem Cia", "Pare Bem", "Voltar");
+			break;
 		default:
 			throw new IllegalArgumentException("Opção inválida, tente novamente");
 		}

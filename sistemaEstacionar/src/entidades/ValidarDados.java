@@ -17,13 +17,13 @@ public class ValidarDados {
 	public static boolean validarSenha(String senha) {
 		return senha != null && (senha.length() > 6);
 	}
-	/*
-	public static boolean validarVaga(String senha) {
-		return senha != null && (senha.length() > 6);
+	
+	public static boolean validarVaga(String vaga) {
+		return vaga != null && vaga.matches("[A-Za-z]\\d{2}");
 	}
 	
-	public static boolean validarPlaca(String senha) {
-		return senha != null && (senha.length() > 6);
+	public static boolean validarPlaca(String placa) {
+		return placa != null && (placa.length() == 7);
 	}
-	*/
+	
 }	

@@ -1,8 +1,9 @@
-// Arquivo: PareBem.java
 package estacionamentos;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import dadosEstacionamento.Garagem;
 import entidades.PedidoEstacionar;
 
 public class PareBem extends Filiais {
@@ -16,13 +17,15 @@ public class PareBem extends Filiais {
     public PareBem(PedidoEstacionar pedido) {
         super(pedido);
     }
+    
+    public PareBem() {
+        super();
+    }
 
-    @Override
     public int getTotalVagasAge() {
         return totalVagasAge;
     }
 
-    @Override
     public int getTotalVagasFlex() {
         return totalVagasFlex;
     }
@@ -37,16 +40,80 @@ public class PareBem extends Filiais {
         return vagasFlex;
     }
 
-    @Override
     public double calcularValorTotalAgendamento() {
-        return (valorDaDiaria + taxaFixaAdd) *  Garagem.checarPrazo(getPedido(), 3);
+        // Usar a instância de Garagem para checar o prazo
+        Garagem garagem = new Garagem(); // Instanciar com valor fictício
+        Long prazo = garagem.checarPrazo(getPedido(), 3);
+        if (prazo == null) {
+            return 0.0;
+        }
+        return (valorDaDiaria + taxaFixaAdd) * prazo;
     }
 
-    @Override
     public void exibirDetalhes() {
         System.out.println("Estacionamento Pare Bem");
         System.out.println("Taxa Fixa Adicional: " + taxaFixaAdd);
         System.out.println("Valor da Diária: " + valorDaDiaria);
-        System.out.println("Valor Total do Agendamento por " +  Garagem.checarPrazo(getPedido(), 3) + " dias: " + calcularValorTotalAgendamento( Garagem.checarPrazo(getPedido(), 3)));
+        
+        // Calcular o prazo e valor total de forma segura
+        Garagem garagem = new Garagem(); // Instanciar com valor fictício
+        Long prazo = garagem.checarPrazo(getPedido(), 3);
+        if (prazo == null) {
+            System.out.println("O prazo do pedido não foi definido.");
+            return;
+        }
+        
+        double valorTotal = (valorDaDiaria + taxaFixaAdd) * prazo;
+        System.out.println("Valor Total do Agendamento por " + prazo + " dias: " + valorTotal);
+    }
+
+    @Override
+    public String getFileEmpresa() {
+        // Retornar o nome do arquivo específico da empresa ou caminho
+        return "pare_bem.dat"; // Exemplo de caminho para armazenamento
+    }
+
+    @Override
+    public boolean ocuparVaga(int vaga, PedidoEstacionar pedido) {
+        if (vaga < 0 || vaga >= totalVagasAge + totalVagasFlex) {
+            return false; // Vaga fora dos limites
+        }
+        
+        if (vaga < totalVagasAge) {
+            if (vagasAgendadas.get(vaga) == null) {
+                vagasAgendadas.set(vaga, pedido);
+                return true;
+            }
+        } else {
+            int index = vaga - totalVagasAge;
+            if (vagasFlex.get(index) == null) {
+                vagasFlex.set(index, pedido);
+                return true;
+            }
+        }
+        
+        return false; // Vaga já ocupada
+    }
+
+    @Override
+    public boolean desocuparVaga(int vaga) {
+        if (vaga < 0 || vaga >= totalVagasAge + totalVagasFlex) {
+            return false; // Vaga fora dos limites
+        }
+        
+        if (vaga < totalVagasAge) {
+            if (vagasAgendadas.get(vaga) != null) {
+                vagasAgendadas.set(vaga, null);
+                return true;
+            }
+        } else {
+            int index = vaga - totalVagasAge;
+            if (vagasFlex.get(index) != null) {
+                vagasFlex.set(index, null);
+                return true;
+            }
+        }
+        
+        return false; // Vaga já está desocupada
     }
 }

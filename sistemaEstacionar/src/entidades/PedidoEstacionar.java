@@ -1,96 +1,76 @@
 package entidades;
 
 import java.time.LocalDateTime;
-
 import dadosEstacionamento.StatusCarro;
 import dadosEstacionamento.VagaCarro;
 
 public class PedidoEstacionar {
-	
-	private Carro carro;
-	private String vaga;
-	private StatusCarro statusCarro;
-	private VagaCarro vagaCarro;
-	
-	private LocalDateTime start = LocalDateTime.now();
-	private LocalDateTime finish;
 
-	public PedidoEstacionar(Carro carro, String vaga, StatusCarro statusCarro, VagaCarro vagaCarro) {
-		this.carro = carro;
-		this.vaga = vaga;
-		this.statusCarro = statusCarro;
-		this.vagaCarro = vagaCarro;
-	}
+    private Carro carro;
+    private String vaga;
+    private StatusCarro statusCarro;
+    private VagaCarro vagaCarro;
+    private LocalDateTime start = LocalDateTime.now();
+    private LocalDateTime finish;
 
-	public Carro getCarro() {
-		return carro;
-	}
+    // Construtor completo
+    public PedidoEstacionar(Carro carro, String vaga, StatusCarro statusCarro, VagaCarro vagaCarro) {
+        this.carro = carro;
+        this.vaga = vaga;
+        this.statusCarro = statusCarro;
+        this.vagaCarro = vagaCarro;
+    }
 
-	public void setCarro(Carro carro) {
-		this.carro = carro;
-	}
+    // Construtor padrão
+    public PedidoEstacionar() {
+    }
 
-	public String getVaga() {
-		return vaga;
-	}
+    // Getters e Setters
+    public Carro getCarro() {
+        return carro;
+    }
 
-	public void setVaga(String vaga) {
-		this.vaga = vaga;
-	}
+    public void setCarro(Carro carro) {
+        this.carro = carro;
+    }
 
-	public StatusCarro getStatusCarro() {
-		return statusCarro;
-	}
+    public String getVaga() {
+        return vaga;
+    }
 
-	public void setStatusCarro(StatusCarro statusCarro) {
-		this.statusCarro = statusCarro;
-	}
+    public void setVaga(String vaga) {
+        this.vaga = vaga;
+    }
 
-	public VagaCarro getVagaCarro() {
-		return vagaCarro;
-	}
-	
-	public void setVagaCarro(VagaCarro vagaCarro) {
-		this.vagaCarro = vagaCarro;
-	}
+    public StatusCarro getStatusCarro() {
+        return statusCarro;
+    }
 
-	public LocalDateTime getStart() {
-		return start;
-	}
+    public void setStatusCarro(StatusCarro statusCarro) {
+        this.statusCarro = statusCarro;
+    }
 
-	public void setStart(LocalDateTime start) {
-		this.start = start;
-	}
+    public VagaCarro getVagaCarro() {
+        return vagaCarro;
+    }
 
-	public LocalDateTime getFinish() {
-		return finish;
-	}
+    public void setVagaCarro(VagaCarro vagaCarro) {
+        this.vagaCarro = vagaCarro;
+    }
 
-	public void setFinish(LocalDateTime finish) {
-		this.finish = finish;
-	}
+    public LocalDateTime getStart() {
+        return start;
+    }
 
-	public boolean set(int i, Object object) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public void setStart(LocalDateTime start) {
+        this.start = start;
+    }
 
-	
-	
-	
-	/*
-	 * private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    public LocalDateTime getFinish() {
+        return finish;
+    }
 
-	    
-	    public long duration() {
-	        long diff = checkOut.getTime() - checkIn.getTime();
-	        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-	    }
-
-	    public void updateDates(Date checkIn, Date checkOut) {
-	        this.checkIn = checkIn;
-	        this.checkOut = checkOut;
-	    }
-	 */
-
+    public void setFinish(LocalDateTime finish) {
+        this.finish = finish;
+    }
 }
