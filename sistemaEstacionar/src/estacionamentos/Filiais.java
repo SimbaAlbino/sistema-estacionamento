@@ -109,7 +109,8 @@ public abstract class Filiais {
 
     public void substituirVaga(Filiais filial, PedidoEstacionar pedidoAntigo) {
         System.out.println("Vagas disponíveis:");
-        mostrarStatusLista(VagaCarro.Vaga_Agendada); // Ajuste conforme o tipo de vaga
+        Garagem garagem = new Garagem(filial);
+        garagem.printarVagasLista();
 
         System.out.println("Digite o código da nova vaga (formato letra e 2 dígitos): ");
         String novaVagaStr = sc.next();
